@@ -169,6 +169,7 @@ var RLANG = {
 					"mark", "cite", "small", "ul", "ol", "li", "hr", "dl", "dt", "dd", "sup", "sub", 
 					"big", "pre", "code", "figure", "figcaption", "strong", "em", "table", "tr", "td", 
 					"th", "tbody", "thead", "tfoot", "h1", "h2", "h3", "h4", "h5", "h6"],
+			formattingTags: false, // array
 			
 			buttonsCustom: {},
 			buttonsAdd: [],
@@ -1659,7 +1660,7 @@ var RLANG = {
 						}
 						else
 						{
-							dropdown = this.buildDropdown(dropdown, s.dropdown);
+							dropdown = this.buildDropdown(dropdown, key);
 						}
 	
 						this.dropdowns.push(dropdown.appendTo($(document.body)));
@@ -1710,12 +1711,26 @@ var RLANG = {
 	
 			return button;
 		},
-		buildDropdown: function(dropdown, obj)
+		buildDropdown: function(dropdown, key)
 		{
+			var obj = this.opts.toolbar[key].dropdown;
+			
+			if (key === 'formatting')
+			{
+				$.each(obj, $.proxy(
+					function(x, d) {
+						if (typeof this.opts.formattingTags === 'object' && $.inArray(x, this.opts.formattingTags) == -1)
+						{
+							delete(obj[x]);
+						}
+					}, this)
+				);
+			}
+			
 			$.each(obj, $.proxy(
 				function (x, d)
 				{
-					if (typeof(d.className) === 'undefined')
+					if (typeof d.className === 'undefined')
 					{
 						d.className = '';
 					}
